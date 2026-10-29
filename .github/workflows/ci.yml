@@ -1,0 +1,30 @@
+name: v0.0 foundation and real Besu
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.22.1
+          cache: npm
+      - uses: docker/setup-docker-action@e43656e248c0bd0647d3f5c195d116aacf6fcaf4 # v4
+        with:
+          version: v26.1.1
+      - uses: docker/setup-compose-action@2fe291b7677a45ee1269ec56a42604c143505e7e # v1
+        with:
+          version: v2.27.0
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm run lab:up
+      - run: npm run lab:verify
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:ui
+      - if: always()
+        run: docker compose -f infra/compose/compose.yaml down

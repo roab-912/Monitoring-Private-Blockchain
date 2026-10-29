@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+const json = async (path: string) => JSON.parse(await readFile(path, 'utf8'));
+const manifest = await json('infra/versions.json'); const pkg = await json('package.json');
+assert.equal(pkg.engines.node, manifest.node); assert.equal(pkg.engines.npm, manifest.npm);
+assert.equal((await readFile('.node-version', 'utf8')).trim(), manifest.node);
+for (const version of Object.values({ ...pkg.dependencies, ...pkg.devDependencies })) assert.match(version as string, /^\d+\.\d+\.\d+$/);
+for (const image of Object.values(manifest.images)) assert.match(image as string, /^[^\s]+:\d+[^@]*@sha256:[0-9a-f]{64}$/);
+const compose = await readFile('infra/compose/compose.yaml', 'utf8');
+const dockerfile = await readFile('infra/compose/Dockerfile', 'utf8');
+assert.ok(compose.includes(manifest.images.besu)); assert.ok(compose.includes(manifest.images.postgres));
+assert.ok(dockerfile.includes(manifest.images.node));
+assert.equal(pkg.devDependencies.solc, manifest.solc);
+console.log('Runtime, dependencies and external image pins agree');

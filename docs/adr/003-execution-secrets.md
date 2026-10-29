@@ -1,0 +1,13 @@
+# ADR-003 — Exécution typée, secrets et authentification
+
+Statut : accepté pour v0.0, 28 octobre 2026.
+
+Le monolithe modulaire possède un processus API et un processus worker distincts. PostgreSQL porte la file durable ; aucun broker supplémentaire. Seul le job `foundation.check` est enregistré : il vérifie effectivement la base et le nombre d'instances. Aucune opération d'infrastructure n'est exposée en v0.0. Son plan est immuable, son idempotence est persistante, son lease est borné, et toute expiration produit NEEDS_ATTENTION au lieu d'une répétition aveugle. Les verrous utilisent une clé réseau, avec schéma compatible avec des clés nœud ; les futures opérations distantes devront ajouter leur fencing sur la cible.
+
+Les scripts du laboratoire sont des outils opérateur de bootstrap/qualification, pas une API de gestion. Ils utilisent spawn avec des arguments séparés et shell=false. L'API ne reçoit ni commande, ni chemin de playbook, ni endpoint RPC arbitraire. Ansible Runner et SecretProvider SSH seront introduits avec leurs opérations réelles en v0.2 ; aucune implémentation simulée n'est fournie.
+
+OIDC utilise Authorization Code + PKCE côté navigateur et des access tokens signés RS256/ES256 côté API. Discovery vérifie l'issuer et HTTPS ; signature, issuer, audience, iat et exp sont contrôlés. Les rôles sont une liste explicite dans le claim `roles`. Durée maximale : quinze minutes ; pas de révocation instantanée par introspection en v0.0. Le navigateur n'envoie aucun cookie d'authentification à l'API, ce qui écarte les mutations CSRF par cookie. Le fournisseur doit distinguer l'audience API et le client web.
+
+Le profil development exige une isolation explicite, refuse production, et exige loopback en profil local. Dans Compose laboratory, l'API écoute dans son conteneur mais seule l'interface loopback de l'hôte est publiée. Les jetons aléatoires sont locaux et ignorés par Git ; l'interface les garde en mémoire. Les credentials OIDC ne sont jamais présents dans l'image. L'API et le worker ont des logins PostgreSQL distincts, sans privilèges de propriétaire/migration. L'audit est append-only pour ces rôles.
+
+Les clés Besu sont distinctes, générées localement puis conservées hors volumes de données. Le compte témoin est une exception strictement opérateur de laboratoire : sa clé est montée uniquement dans le vérificateur ponctuel, jamais dans l'API/worker. Aucun service de signature ni stockage de compte applicatif n'est créé. Les secrets Compose sont des fichiers locaux, pas un coffre chiffré ; sous Windows leur protection dépend des ACL du compte utilisateur. Ne jamais partager `.runtime` ni réutiliser ces identités hors laboratoire.

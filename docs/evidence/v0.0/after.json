@@ -1,0 +1,63 @@
+{
+  "phase": "after",
+  "recordedAt": "2026-10-28T16:13:28.052Z",
+  "network": {
+    "nodes": [
+      {
+        "name": "v1",
+        "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+        "enode": "enode://9bb3d6462ee9f6ac7062c700196c96a1e862eb0b82bb8edd6eb1fd05334b346d795f853e3f2eead321f4bdfdbdbbddb6d9ab96e30e64e64671dbd79eb0c8c516@172.29.77.10:30303?discport=0",
+        "genesisBlockHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "height": "309",
+        "nodeAddress": "0xfde889b2e0effed6ebef70b6657728559c9f865b",
+        "p2pIdentity": "9bb3d6462ee9f6ac7062c700196c96a1e862eb0b82bb8edd6eb1fd05334b346d795f853e3f2eead321f4bdfdbdbbddb6d9ab96e30e64e64671dbd79eb0c8c516"
+      },
+      {
+        "name": "v2",
+        "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+        "enode": "enode://0e8de22357a8dd6f3f8c9f52b6516843b571aae19a14f90f6fe1f9a2d6b1ccabb0565e2bafe27b15c5c2cbcd2f8da688d20d074abdc024170a0b0325127b46c5@172.29.77.11:30304?discport=0",
+        "genesisBlockHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "height": "309",
+        "nodeAddress": "0xc0851d301c8a9202dc25a04cc3a4d9eb044f3170",
+        "p2pIdentity": "0e8de22357a8dd6f3f8c9f52b6516843b571aae19a14f90f6fe1f9a2d6b1ccabb0565e2bafe27b15c5c2cbcd2f8da688d20d074abdc024170a0b0325127b46c5"
+      },
+      {
+        "name": "v3",
+        "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+        "enode": "enode://432fcdc262e93e9c4420c1adaeb3f02b6dbdc8aee339eebb2fe51de0f250c7db0788d81ca2481ed5599394fe28ca89e1591067474a2070df664ad3c411d33ede@172.29.77.12:30305?discport=0",
+        "genesisBlockHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "height": "310",
+        "nodeAddress": "0xd490281591c8145d7bf28141878d5fd23d040960",
+        "p2pIdentity": "432fcdc262e93e9c4420c1adaeb3f02b6dbdc8aee339eebb2fe51de0f250c7db0788d81ca2481ed5599394fe28ca89e1591067474a2070df664ad3c411d33ede"
+      },
+      {
+        "name": "v4",
+        "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+        "enode": "enode://41cbafa78f25a455da46efd6e2ef53c5b70742ce27e7cc03f14a8c4af00d206ce0e455b4d63793000800d5a7e2e2208a8e56b89cef1fd4792ce1ea203f9df479@172.29.77.13:30306?discport=0",
+        "genesisBlockHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "height": "311",
+        "nodeAddress": "0xa00b092fe8a048fc478d4813a01bd326563b3453",
+        "p2pIdentity": "41cbafa78f25a455da46efd6e2ef53c5b70742ce27e7cc03f14a8c4af00d206ce0e455b4d63793000800d5a7e2e2208a8e56b89cef1fd4792ce1ea203f9df479"
+      },
+      {
+        "name": "rpc",
+        "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+        "enode": "enode://da862b8a273e9b6d3d6b25a200a7c22f3190af50aeb4863fad668455c945f40703d52c62417c7c266f0f8143eb9a4beb2892a0da2ec866ad4dcf79eb878f8d2a@172.29.77.14:30307?discport=0",
+        "genesisBlockHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "height": "311",
+        "nodeAddress": "0x2848a0156be02875247e33c2523ee5c1cb17ad21",
+        "p2pIdentity": "da862b8a273e9b6d3d6b25a200a7c22f3190af50aeb4863fad668455c945f40703d52c62417c7c266f0f8143eb9a4beb2892a0da2ec866ad4dcf79eb878f8d2a"
+      }
+    ],
+    "checkpoint": {
+      "height": "309",
+      "hash": "0xea33c54db7cb0f7d42b41892a6a869939d675f0c616c723b3195a9d2c79d4274",
+      "stateRoot": "0x8a9c603d8e45b32b755f37b3dee71eaec05f9ea40d83a1aa75b6831cb72a5bc9"
+    }
+  },
+  "t01": "passed",
+  "contractAddress": "0xee95850bfffebd889a7900abddcc59824b0f41bf",
+  "value": "900719925474099312345678901234567890",
+  "postRestartTransaction": "0x456ea553ac0eb650723cbf2cc0ef4c9e6dc794ea01c8ff6ead29ea80d5baa406",
+  "genesisFileSha256": "d312932291eac9842de2d07171057f6c66c62fab87fce45be41901155293f8c1"
+}
