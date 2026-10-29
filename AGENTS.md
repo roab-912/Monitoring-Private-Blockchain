@@ -47,4 +47,6 @@ Les instructions explicites du propriétaire du dépôt priment sur ce cadrage. 
 
 Mettre à jour CHANGELOG.md, docs/STATUS.md, README.md et les runbooks concernés. docs/STATUS.md doit indiquer la version atteinte, les critères validés, les commandes exécutées, les tests non exécutés, les limites et le prochain jalon.
 
+Après les vérifications et la mise à jour des documents, relancer systématiquement le projet avec `npm run lab:up` en utilisant le runtime épinglé. Attendre le démarrage réussi des services, puis exécuter `npm run lab:credentials` pour obtenir les credentials locaux de développement. Communiquer l'URL et les credentials à l'utilisateur dans le bilan final, sans les enregistrer dans les fichiers versionnés. Ne pas régénérer les clés ni supprimer les données lors de cette relance.
+
 Fournir un bilan court : changements, preuve de fonctionnement, risques résiduels et commande de démarrage. Une qualification non exécutée reste non acquise. Les commits, tags, PR et déploiements suivent les autorisations données dans la session.

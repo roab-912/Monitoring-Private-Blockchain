@@ -1,0 +1,74 @@
+{
+  "recordedAt": "2026-10-29T08:05:36.454Z",
+  "snapshot": {
+    "status": {
+      "network": {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Local QBFT laboratory",
+        "chainId": "1337",
+        "networkId": "1337",
+        "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "ownership": "managed",
+        "besuVersion": "26.9.0"
+      },
+      "generation": "2",
+      "sourceIds": [
+        "rpc",
+        "validator-1"
+      ],
+      "state": "CAUGHT_UP",
+      "nextBlock": "1847",
+      "indexedHeight": "1846",
+      "indexedHash": "0x7445e9a980548a40d73c46a91f75317d0341fa830321ecb9b5de516650c3473c",
+      "observedHead": "1846",
+      "lag": "0",
+      "lastObservedAt": "2026-10-29T08:05:20.504Z",
+      "lastIndexedAt": "2026-10-29T08:05:19.430Z",
+      "heartbeatAt": "2026-10-29T08:05:20.506Z",
+      "observationStale": true,
+      "incidentCode": null,
+      "incidentHeight": null,
+      "observations": [
+        {
+          "head": "1846",
+          "label": "Nœud RPC du laboratoire",
+          "chainId": "1337",
+          "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+          "sourceId": "rpc",
+          "observedAt": "2026-10-29T08:05:20.499Z",
+          "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+          "capabilities": [
+            "blocks",
+            "transactions",
+            "receipts",
+            "logs"
+          ]
+        },
+        {
+          "head": "1846",
+          "label": "Lecture du validateur 1",
+          "chainId": "1337",
+          "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+          "sourceId": "validator-1",
+          "observedAt": "2026-10-29T08:05:20.498Z",
+          "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+          "capabilities": [
+            "blocks",
+            "transactions",
+            "receipts",
+            "logs"
+          ]
+        }
+      ],
+      "blockCount": "1847",
+      "transactionCount": "23",
+      "logCount": "10"
+    },
+    "nextBlock": "1847",
+    "lastHash": "0x7445e9a980548a40d73c46a91f75317d0341fa830321ecb9b5de516650c3473c",
+    "blockCount": "1847",
+    "transactionCount": "23",
+    "networkId": "00000000-0000-4000-8000-000000000001"
+  },
+  "stoppedWith": "SIGKILL"
+}

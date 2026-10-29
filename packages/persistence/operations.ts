@@ -11,7 +11,7 @@ export async function audit(db: Database | pg.PoolClient, subject: string, actio
 
 export function operationDto(row: pg.QueryResultRow): OperationDto {
   return { id: row.id, kind: row.kind, state: row.state, createdAt: row.created_at.toISOString(),
-    updatedAt: row.updated_at.toISOString(), evidence: row.evidence };
+    updatedAt: row.updated_at.toISOString(), evidence: row.evidence, errorCode:row.error_code };
 }
 
 export async function enqueueCheck(db: Database, networkId: string, author: string, key: string, correlationId: string) {
@@ -58,13 +58,13 @@ export async function reconcileExpired(db: Database) {
   } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
 }
 
-export async function claimCheck(db: Database, owner: string) {
+export async function claimCheck(db: Database, owner: string, kind='foundation.check') {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
-    const result = await client.query(`SELECT * FROM operations o WHERE state='QUEUED' AND deadline>clock_timestamp()
+    const result = await client.query(`SELECT * FROM operations o WHERE state='QUEUED' AND kind=$1 AND deadline>clock_timestamp()
       AND NOT EXISTS (SELECT 1 FROM resource_locks l WHERE l.resource_key='network:'||o.network_id::text)
-      ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1`);
+      ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1`,[kind]);
     if (!result.rowCount) { await client.query('COMMIT'); return null; }
     const row = result.rows[0];
     assertTransition('QUEUED', 'RUNNING');

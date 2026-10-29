@@ -1,6 +1,6 @@
 {
   "name": "besu-operations-console",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "engines": { "node": "24.22.1", "npm": "11.19.1" },
@@ -24,6 +24,7 @@
     "lab:up": "tsx scripts/lab.ts up",
     "lab:down": "tsx scripts/lab.ts down",
     "lab:verify": "tsx tests/integration/lab.ts",
+    "lab:explorer:verify": "tsx tests/integration/explorer-lab.ts",
     "lab:credentials": "tsx scripts/lab.ts credentials"
   },
   "dependencies": {

@@ -1,0 +1,107 @@
+{
+  "recordedAt": "2026-10-29T08:06:47.595Z",
+  "foreignGenesis": {
+    "chainId": "1337",
+    "expected": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+    "actual": "0x707d357779e79934144ee9ddf515e9fb3975b7db870ca3054443ec5ccf19ff4d",
+    "jobId": "4f85c7b6-a70d-4231-8df3-f6b5af6423f4",
+    "result": "GENESIS_MISMATCH"
+  },
+  "importedConnection": {
+    "isolatedDatabase": true,
+    "verified": true,
+    "evidence": {
+      "status": {
+        "network": {
+          "id": "8912a5df-331f-4944-9310-c64326f8d0c0",
+          "name": "Verified import",
+          "chainId": "1337",
+          "networkId": "1337",
+          "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+          "ownership": "imported",
+          "besuVersion": "26.9.0"
+        },
+        "generation": "1",
+        "sourceIds": [
+          "rpc",
+          "validator-1"
+        ],
+        "state": "INDEXING",
+        "nextBlock": "3",
+        "indexedHeight": "2",
+        "indexedHash": "0xebdfe88370f69458172bca5ef034a087ecfd91372202e6a8fd99f4be5c9f4153",
+        "observedHead": "1887",
+        "lag": "1885",
+        "lastObservedAt": "2026-10-29T08:06:42.005Z",
+        "lastIndexedAt": "2026-10-29T08:06:42.053Z",
+        "heartbeatAt": "2026-10-29T08:06:42.055Z",
+        "observationStale": false,
+        "incidentCode": null,
+        "incidentHeight": null,
+        "observations": [
+          {
+            "head": "1887",
+            "label": "Nœud RPC du laboratoire",
+            "chainId": "1337",
+            "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+            "sourceId": "rpc",
+            "observedAt": "2026-10-29T08:06:42.003Z",
+            "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+            "capabilities": [
+              "blocks",
+              "transactions",
+              "receipts",
+              "logs"
+            ]
+          },
+          {
+            "head": "1887",
+            "label": "Lecture du validateur 1",
+            "chainId": "1337",
+            "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+            "sourceId": "validator-1",
+            "observedAt": "2026-10-29T08:06:41.996Z",
+            "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+            "capabilities": [
+              "blocks",
+              "transactions",
+              "receipts",
+              "logs"
+            ]
+          }
+        ],
+        "blockCount": "3",
+        "transactionCount": "0",
+        "logCount": "0"
+      },
+      "nextBlock": "3",
+      "lastHash": "0xebdfe88370f69458172bca5ef034a087ecfd91372202e6a8fd99f4be5c9f4153",
+      "blockCount": "3",
+      "transactionCount": "0",
+      "networkId": "8912a5df-331f-4944-9310-c64326f8d0c0"
+    }
+  },
+  "rpcFaultInjection": [
+    {
+      "injection": "hash",
+      "state": "DIVERGED",
+      "incidentCode": "SOURCES_DIVERGED",
+      "nextBlock": "1880",
+      "historyPreserved": true
+    },
+    {
+      "injection": "parent",
+      "state": "DIVERGED",
+      "incidentCode": "PARENT_HASH_MISMATCH",
+      "nextBlock": "1880",
+      "historyPreserved": true
+    },
+    {
+      "injection": "missing-receipt",
+      "state": "MISSING_RECEIPT",
+      "nextBlock": "1888",
+      "historyPreserved": true
+    }
+  ],
+  "note": "Injected RPC responses test index safety; they are not a real Byzantine fork."
+}

@@ -1,0 +1,93 @@
+{
+  "recordedAt": "2026-10-29T08:05:16.386Z",
+  "scenario": "Real Besu explorer",
+  "snapshot": {
+    "status": {
+      "network": {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Local QBFT laboratory",
+        "chainId": "1337",
+        "networkId": "1337",
+        "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+        "ownership": "managed",
+        "besuVersion": "26.9.0"
+      },
+      "generation": "2",
+      "sourceIds": [
+        "rpc",
+        "validator-1"
+      ],
+      "state": "CAUGHT_UP",
+      "nextBlock": "1845",
+      "indexedHeight": "1844",
+      "indexedHash": "0x8cfb00f12be8ae1ef09691264d1df97ba96abed5441b09c4d7447d8e1d49dd23",
+      "observedHead": "1844",
+      "lag": "0",
+      "lastObservedAt": "2026-10-29T08:05:16.278Z",
+      "lastIndexedAt": "2026-10-29T08:05:15.189Z",
+      "heartbeatAt": "2026-10-29T08:05:16.282Z",
+      "observationStale": false,
+      "incidentCode": null,
+      "incidentHeight": null,
+      "observations": [
+        {
+          "head": "1844",
+          "label": "Nœud RPC du laboratoire",
+          "chainId": "1337",
+          "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+          "sourceId": "rpc",
+          "observedAt": "2026-10-29T08:05:16.272Z",
+          "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+          "capabilities": [
+            "blocks",
+            "transactions",
+            "receipts",
+            "logs"
+          ]
+        },
+        {
+          "head": "1844",
+          "label": "Lecture du validateur 1",
+          "chainId": "1337",
+          "version": "besu/v26.9.0/linux-x86_64/openjdk-java-25",
+          "sourceId": "validator-1",
+          "observedAt": "2026-10-29T08:05:16.271Z",
+          "genesisHash": "0xcea7705a1065a52da4aa914f7b8e2052685970759495c579dc17f5a530781822",
+          "capabilities": [
+            "blocks",
+            "transactions",
+            "receipts",
+            "logs"
+          ]
+        }
+      ],
+      "blockCount": "1845",
+      "transactionCount": "23",
+      "logCount": "10"
+    },
+    "nextBlock": "1845",
+    "lastHash": "0x8cfb00f12be8ae1ef09691264d1df97ba96abed5441b09c4d7447d8e1d49dd23",
+    "blockCount": "1845",
+    "transactionCount": "23",
+    "networkId": "00000000-0000-4000-8000-000000000001"
+  },
+  "transferHash": "0x591ca72885c347b7eea7cc73af8cdecfa29599f609887a3d2ab15548d181be1b",
+  "exactValueWei": "9007199254740993",
+  "contract": {
+    "address": "0x5c59a41ea1135ff10a7bf806ef1700532ade5be3",
+    "deploymentHash": "0x31cf463b9378c6fba0e2cabf3966784d23d9b3d82d9af7f9c6858ac6affaaeb5",
+    "writeHash": "0x5a06be5ef349e72aee2a8701c198aface5e156500eb1bd19f893600084c27fe0",
+    "revertHash": "0x368786a95417848ce7e586b9f79b39c3702634eb6b9cb08d0bf9e9e62752a6c2",
+    "value": "900719925474099312345678901234567890",
+    "writeBlock": "1723",
+    "writeBlockHash": "0x8a96128d44f5199ea7c03f6e13f3bfd677b5797fa8368f4bb9c08b4889446fc1",
+    "compiler": "0.8.38+commit.1835d247.Emscripten.clang",
+    "evmVersion": "berlin"
+  },
+  "readRbac": {
+    "anonymous": 401,
+    "viewerWrite": 403
+  },
+  "pagination": "passed",
+  "logs": "passed"
+}

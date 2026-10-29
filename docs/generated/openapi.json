@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Besu Console Foundation",
-    "version": "0.0.0"
+    "title": "Besu Operations Console",
+    "version": "0.1.0"
   },
   "components": {
     "securitySchemes": {
@@ -196,6 +196,25 @@
               }
             }
           },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Default Response",
             "content": {
@@ -245,7 +264,7 @@
                     "version": {
                       "type": "string",
                       "enum": [
-                        "0.0.0"
+                        "0.1.0"
                       ]
                     },
                     "networkId": {
@@ -386,6 +405,25 @@
               }
             }
           },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Default Response",
             "content": {
@@ -459,6 +497,7 @@
                     "id",
                     "state",
                     "kind",
+                    "errorCode",
                     "createdAt",
                     "updatedAt",
                     "evidence"
@@ -472,10 +511,24 @@
                       "type": "string"
                     },
                     "kind": {
-                      "type": "string",
-                      "enum": [
-                        "foundation.check"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "foundation.check"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "network.connect"
+                          ]
+                        }
                       ]
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "nullable": true
                     },
                     "createdAt": {
                       "type": "string"
@@ -484,27 +537,1409 @@
                       "type": "string"
                     },
                     "evidence": {
-                      "type": "object",
-                      "required": [
-                        "database",
-                        "instanceCount",
-                        "checkedAt"
-                      ],
-                      "properties": {
-                        "database": {
-                          "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "nullable": true,
                           "enum": [
-                            "reachable"
+                            null
                           ]
                         },
-                        "instanceCount": {
-                          "pattern": "^[0-9]+$",
+                        {
+                          "type": "object",
+                          "required": [
+                            "database",
+                            "instanceCount",
+                            "checkedAt"
+                          ],
+                          "properties": {
+                            "database": {
+                              "type": "string",
+                              "enum": [
+                                "reachable"
+                              ]
+                            },
+                            "instanceCount": {
+                              "pattern": "^[0-9]+$",
+                              "type": "string"
+                            },
+                            "checkedAt": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "networkId",
+                            "chainId",
+                            "genesisHash",
+                            "sourceIds",
+                            "checkedAt"
+                          ],
+                          "properties": {
+                            "networkId": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "chainId": {
+                              "type": "string"
+                            },
+                            "genesisHash": {
+                              "type": "string"
+                            },
+                            "sourceIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "checkedAt": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/operations/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "state",
+                    "kind",
+                    "errorCode",
+                    "createdAt",
+                    "updatedAt",
+                    "evidence"
+                  ],
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "foundation.check"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "network.connect"
+                          ]
+                        }
+                      ]
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "evidence": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "nullable": true,
+                          "enum": [
+                            null
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "database",
+                            "instanceCount",
+                            "checkedAt"
+                          ],
+                          "properties": {
+                            "database": {
+                              "type": "string",
+                              "enum": [
+                                "reachable"
+                              ]
+                            },
+                            "instanceCount": {
+                              "pattern": "^[0-9]+$",
+                              "type": "string"
+                            },
+                            "checkedAt": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "networkId",
+                            "chainId",
+                            "genesisHash",
+                            "sourceIds",
+                            "checkedAt"
+                          ],
+                          "properties": {
+                            "networkId": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "chainId": {
+                              "type": "string"
+                            },
+                            "genesisHash": {
+                              "type": "string"
+                            },
+                            "sourceIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "checkedAt": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/status": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "network",
+                    "generation",
+                    "sourceIds",
+                    "state",
+                    "nextBlock",
+                    "indexedHeight",
+                    "indexedHash",
+                    "observedHead",
+                    "lag",
+                    "lastObservedAt",
+                    "lastIndexedAt",
+                    "heartbeatAt",
+                    "observationStale",
+                    "incidentCode",
+                    "incidentHeight",
+                    "observations",
+                    "blockCount",
+                    "transactionCount",
+                    "logCount"
+                  ],
+                  "properties": {
+                    "network": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "name",
+                        "chainId",
+                        "networkId",
+                        "genesisHash",
+                        "ownership",
+                        "besuVersion"
+                      ],
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
                           "type": "string"
                         },
-                        "checkedAt": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "chainId": {
+                          "pattern": "^(0|[1-9][0-9]{0,77})$",
+                          "type": "string"
+                        },
+                        "networkId": {
+                          "pattern": "^(0|[1-9][0-9]{0,77})$",
+                          "type": "string"
+                        },
+                        "genesisHash": {
+                          "pattern": "^0x[0-9a-fA-F]{64}$",
+                          "type": "string"
+                        },
+                        "ownership": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "managed"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "imported"
+                              ]
+                            }
+                          ]
+                        },
+                        "besuVersion": {
                           "type": "string"
                         }
                       },
+                      "nullable": true
+                    },
+                    "generation": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "sourceIds": {
+                      "type": "array",
+                      "items": {
+                        "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                        "type": "string"
+                      }
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "nextBlock": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "indexedHeight": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "indexedHash": {
+                      "pattern": "^0x[0-9a-fA-F]{64}$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "observedHead": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "lag": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "lastObservedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "lastIndexedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "heartbeatAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "observationStale": {
+                      "type": "boolean"
+                    },
+                    "incidentCode": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "incidentHeight": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "observations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "sourceId",
+                          "label",
+                          "version",
+                          "head",
+                          "chainId",
+                          "genesisHash",
+                          "observedAt",
+                          "capabilities"
+                        ],
+                        "properties": {
+                          "sourceId": {
+                            "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "string"
+                          },
+                          "head": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "chainId": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "genesisHash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "observedAt": {
+                            "type": "string"
+                          },
+                          "capabilities": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "blockCount": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "transactionCount": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "logCount": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/sources": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "label"
+                    ],
+                    "properties": {
+                      "id": {
+                        "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/connection": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "name",
+                  "chainId",
+                  "networkId",
+                  "genesisHash",
+                  "sourceIds"
+                ],
+                "properties": {
+                  "name": {
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "type": "string"
+                  },
+                  "chainId": {
+                    "pattern": "^(0|[1-9][0-9]{0,77})$",
+                    "type": "string"
+                  },
+                  "networkId": {
+                    "pattern": "^(0|[1-9][0-9]{0,77})$",
+                    "type": "string"
+                  },
+                  "genesisHash": {
+                    "pattern": "^0x[0-9a-fA-F]{64}$",
+                    "type": "string"
+                  },
+                  "sourceIds": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "minLength": 8,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "state",
+                    "kind",
+                    "errorCode",
+                    "createdAt",
+                    "updatedAt",
+                    "evidence"
+                  ],
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "foundation.check"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "network.connect"
+                          ]
+                        }
+                      ]
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "evidence": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "nullable": true,
+                          "enum": [
+                            null
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "database",
+                            "instanceCount",
+                            "checkedAt"
+                          ],
+                          "properties": {
+                            "database": {
+                              "type": "string",
+                              "enum": [
+                                "reachable"
+                              ]
+                            },
+                            "instanceCount": {
+                              "pattern": "^[0-9]+$",
+                              "type": "string"
+                            },
+                            "checkedAt": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "networkId",
+                            "chainId",
+                            "genesisHash",
+                            "sourceIds",
+                            "checkedAt"
+                          ],
+                          "properties": {
+                            "networkId": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "chainId": {
+                              "type": "string"
+                            },
+                            "genesisHash": {
+                              "type": "string"
+                            },
+                            "sourceIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "checkedAt": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/blocks": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^[0-9]{1,78}(?::[0-9]{1,10})?$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "before",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "networkId",
+                          "height",
+                          "hash",
+                          "parentHash",
+                          "stateRoot",
+                          "miner",
+                          "timestamp",
+                          "gasLimit",
+                          "gasUsed",
+                          "transactionCount",
+                          "sourceIds",
+                          "indexedAt"
+                        ],
+                        "properties": {
+                          "networkId": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "height": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "hash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "parentHash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "stateRoot": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "miner": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string"
+                          },
+                          "timestamp": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gasLimit": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gasUsed": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "transactionCount": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "sourceIds": {
+                            "type": "array",
+                            "items": {
+                              "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                              "type": "string"
+                            }
+                          },
+                          "indexedAt": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "nextCursor": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string",
                       "nullable": true
                     }
                   }
@@ -607,6 +2042,25 @@
               }
             }
           },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Default Response",
             "content": {
@@ -629,16 +2083,16 @@
         }
       }
     },
-    "/api/operations/{id}": {
+    "/api/explorer/blocks/{height}": {
       "get": {
         "parameters": [
           {
             "schema": {
-              "format": "uuid",
+              "pattern": "^(0|[1-9][0-9]{0,77})$",
               "type": "string"
             },
             "in": "path",
-            "name": "id",
+            "name": "height",
             "required": true
           }
         ],
@@ -655,56 +2109,88 @@
                 "schema": {
                   "type": "object",
                   "required": [
-                    "id",
-                    "state",
-                    "kind",
-                    "createdAt",
-                    "updatedAt",
-                    "evidence"
+                    "networkId",
+                    "height",
+                    "hash",
+                    "parentHash",
+                    "stateRoot",
+                    "miner",
+                    "timestamp",
+                    "gasLimit",
+                    "gasUsed",
+                    "transactionCount",
+                    "sourceIds",
+                    "indexedAt"
                   ],
                   "properties": {
-                    "id": {
+                    "networkId": {
                       "format": "uuid",
                       "type": "string"
                     },
-                    "state": {
+                    "height": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
                       "type": "string"
                     },
-                    "kind": {
-                      "type": "string",
-                      "enum": [
-                        "foundation.check"
-                      ]
-                    },
-                    "createdAt": {
+                    "hash": {
+                      "pattern": "^0x[0-9a-fA-F]{64}$",
                       "type": "string"
                     },
-                    "updatedAt": {
+                    "parentHash": {
+                      "pattern": "^0x[0-9a-fA-F]{64}$",
                       "type": "string"
                     },
-                    "evidence": {
-                      "type": "object",
-                      "required": [
-                        "database",
-                        "instanceCount",
-                        "checkedAt"
-                      ],
-                      "properties": {
-                        "database": {
-                          "type": "string",
-                          "enum": [
-                            "reachable"
-                          ]
-                        },
-                        "instanceCount": {
-                          "pattern": "^[0-9]+$",
-                          "type": "string"
-                        },
-                        "checkedAt": {
-                          "type": "string"
-                        }
-                      },
-                      "nullable": true
+                    "stateRoot": {
+                      "pattern": "^0x[0-9a-fA-F]{64}$",
+                      "type": "string"
+                    },
+                    "miner": {
+                      "pattern": "^0x[0-9a-fA-F]{40}$",
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "gasLimit": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "gasUsed": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "transactionCount": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "sourceIds": {
+                      "type": "array",
+                      "items": {
+                        "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                        "type": "string"
+                      }
+                    },
+                    "indexedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
                     }
                   }
                 }
@@ -750,6 +2236,2050 @@
             }
           },
           "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/transactions": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^[0-9]{1,78}(?::[0-9]{1,10})?$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "before",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "networkId",
+                          "hash",
+                          "blockHeight",
+                          "blockHash",
+                          "transactionIndex",
+                          "sender",
+                          "recipient",
+                          "valueWei",
+                          "nonce",
+                          "gas",
+                          "gasPrice",
+                          "input",
+                          "type",
+                          "kind",
+                          "receipt",
+                          "timestamp",
+                          "sourceIds",
+                          "indexedAt"
+                        ],
+                        "properties": {
+                          "networkId": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "hash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "blockHeight": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "blockHash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "transactionIndex": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "sender": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string"
+                          },
+                          "recipient": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "valueWei": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "nonce": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gas": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gasPrice": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "input": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "creation"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "transaction"
+                                ]
+                              }
+                            ]
+                          },
+                          "receipt": {
+                            "type": "object",
+                            "required": [
+                              "status",
+                              "gasUsed",
+                              "cumulativeGasUsed",
+                              "effectiveGasPrice",
+                              "contractAddress"
+                            ],
+                            "properties": {
+                              "status": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "success"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "reverted"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "gasUsed": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string"
+                              },
+                              "cumulativeGasUsed": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string"
+                              },
+                              "effectiveGasPrice": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "contractAddress": {
+                                "pattern": "^0x[0-9a-fA-F]{40}$",
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          },
+                          "timestamp": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "sourceIds": {
+                            "type": "array",
+                            "items": {
+                              "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                              "type": "string"
+                            }
+                          },
+                          "indexedAt": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/blocks/{height}/transactions": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^[0-9]{1,78}(?::[0-9]{1,10})?$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "before",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^(0|[1-9][0-9]{0,77})$",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "height",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "networkId",
+                          "hash",
+                          "blockHeight",
+                          "blockHash",
+                          "transactionIndex",
+                          "sender",
+                          "recipient",
+                          "valueWei",
+                          "nonce",
+                          "gas",
+                          "gasPrice",
+                          "input",
+                          "type",
+                          "kind",
+                          "receipt",
+                          "timestamp",
+                          "sourceIds",
+                          "indexedAt"
+                        ],
+                        "properties": {
+                          "networkId": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "hash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "blockHeight": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "blockHash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "transactionIndex": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "sender": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string"
+                          },
+                          "recipient": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "valueWei": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "nonce": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gas": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gasPrice": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "input": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "creation"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "transaction"
+                                ]
+                              }
+                            ]
+                          },
+                          "receipt": {
+                            "type": "object",
+                            "required": [
+                              "status",
+                              "gasUsed",
+                              "cumulativeGasUsed",
+                              "effectiveGasPrice",
+                              "contractAddress"
+                            ],
+                            "properties": {
+                              "status": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "success"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "reverted"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "gasUsed": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string"
+                              },
+                              "cumulativeGasUsed": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string"
+                              },
+                              "effectiveGasPrice": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "contractAddress": {
+                                "pattern": "^0x[0-9a-fA-F]{40}$",
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          },
+                          "timestamp": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "sourceIds": {
+                            "type": "array",
+                            "items": {
+                              "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                              "type": "string"
+                            }
+                          },
+                          "indexedAt": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/transactions/{hash}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "pattern": "^0x[0-9a-fA-F]{64}$",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "hash",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "networkId",
+                    "hash",
+                    "blockHeight",
+                    "blockHash",
+                    "transactionIndex",
+                    "sender",
+                    "recipient",
+                    "valueWei",
+                    "nonce",
+                    "gas",
+                    "gasPrice",
+                    "input",
+                    "type",
+                    "kind",
+                    "receipt",
+                    "timestamp",
+                    "sourceIds",
+                    "indexedAt"
+                  ],
+                  "properties": {
+                    "networkId": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "hash": {
+                      "pattern": "^0x[0-9a-fA-F]{64}$",
+                      "type": "string"
+                    },
+                    "blockHeight": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "blockHash": {
+                      "pattern": "^0x[0-9a-fA-F]{64}$",
+                      "type": "string"
+                    },
+                    "transactionIndex": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "sender": {
+                      "pattern": "^0x[0-9a-fA-F]{40}$",
+                      "type": "string"
+                    },
+                    "recipient": {
+                      "pattern": "^0x[0-9a-fA-F]{40}$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "valueWei": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "nonce": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "gas": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "gasPrice": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "input": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "creation"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "transaction"
+                          ]
+                        }
+                      ]
+                    },
+                    "receipt": {
+                      "type": "object",
+                      "required": [
+                        "status",
+                        "gasUsed",
+                        "cumulativeGasUsed",
+                        "effectiveGasPrice",
+                        "contractAddress"
+                      ],
+                      "properties": {
+                        "status": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "success"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "reverted"
+                              ]
+                            }
+                          ]
+                        },
+                        "gasUsed": {
+                          "pattern": "^(0|[1-9][0-9]{0,77})$",
+                          "type": "string"
+                        },
+                        "cumulativeGasUsed": {
+                          "pattern": "^(0|[1-9][0-9]{0,77})$",
+                          "type": "string"
+                        },
+                        "effectiveGasPrice": {
+                          "pattern": "^(0|[1-9][0-9]{0,77})$",
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "contractAddress": {
+                          "pattern": "^0x[0-9a-fA-F]{40}$",
+                          "type": "string",
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "sourceIds": {
+                      "type": "array",
+                      "items": {
+                        "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                        "type": "string"
+                      }
+                    },
+                    "indexedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/addresses/{address}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "pattern": "^0x[0-9a-fA-F]{40}$",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "address",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "networkId",
+                    "address",
+                    "transactionCount",
+                    "logCount",
+                    "observedContractCreation"
+                  ],
+                  "properties": {
+                    "networkId": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "address": {
+                      "pattern": "^0x[0-9a-fA-F]{40}$",
+                      "type": "string"
+                    },
+                    "transactionCount": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "logCount": {
+                      "pattern": "^(0|[1-9][0-9]{0,77})$",
+                      "type": "string"
+                    },
+                    "observedContractCreation": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/addresses/{address}/transactions": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^[0-9]{1,78}(?::[0-9]{1,10})?$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "before",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^0x[0-9a-fA-F]{40}$",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "address",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "networkId",
+                          "hash",
+                          "blockHeight",
+                          "blockHash",
+                          "transactionIndex",
+                          "sender",
+                          "recipient",
+                          "valueWei",
+                          "nonce",
+                          "gas",
+                          "gasPrice",
+                          "input",
+                          "type",
+                          "kind",
+                          "receipt",
+                          "timestamp",
+                          "sourceIds",
+                          "indexedAt"
+                        ],
+                        "properties": {
+                          "networkId": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "hash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "blockHeight": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "blockHash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "transactionIndex": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "sender": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string"
+                          },
+                          "recipient": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "valueWei": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "nonce": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gas": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "gasPrice": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "input": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "creation"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "transaction"
+                                ]
+                              }
+                            ]
+                          },
+                          "receipt": {
+                            "type": "object",
+                            "required": [
+                              "status",
+                              "gasUsed",
+                              "cumulativeGasUsed",
+                              "effectiveGasPrice",
+                              "contractAddress"
+                            ],
+                            "properties": {
+                              "status": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "success"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "reverted"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "gasUsed": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string"
+                              },
+                              "cumulativeGasUsed": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string"
+                              },
+                              "effectiveGasPrice": {
+                                "pattern": "^(0|[1-9][0-9]{0,77})$",
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "contractAddress": {
+                                "pattern": "^0x[0-9a-fA-F]{40}$",
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          },
+                          "timestamp": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "sourceIds": {
+                            "type": "array",
+                            "items": {
+                              "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                              "type": "string"
+                            }
+                          },
+                          "indexedAt": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/logs": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^[0-9]{1,78}(?::[0-9]{1,10})?$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "before",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^0x[0-9a-fA-F]{40}$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "address",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^0x[0-9a-fA-F]{64}$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "transactionHash",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "networkId",
+                          "blockHeight",
+                          "logIndex",
+                          "transactionHash",
+                          "address",
+                          "topics",
+                          "data"
+                        ],
+                        "properties": {
+                          "networkId": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "blockHeight": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "logIndex": {
+                            "pattern": "^(0|[1-9][0-9]{0,77})$",
+                            "type": "string"
+                          },
+                          "transactionHash": {
+                            "pattern": "^0x[0-9a-fA-F]{64}$",
+                            "type": "string"
+                          },
+                          "address": {
+                            "pattern": "^0x[0-9a-fA-F]{40}$",
+                            "type": "string"
+                          },
+                          "topics": {
+                            "type": "array",
+                            "items": {
+                              "pattern": "^0x[0-9a-fA-F]{64}$",
+                              "type": "string"
+                            }
+                          },
+                          "data": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/explorer/search": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minLength": 1,
+              "maxLength": 80,
+              "type": "string"
+            },
+            "in": "query",
+            "name": "q",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "value"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "block"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "transaction"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "address"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      ]
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
             "description": "Default Response",
             "content": {
               "application/json": {

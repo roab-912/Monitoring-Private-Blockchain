@@ -6,6 +6,9 @@ import { database, type Database } from '../../packages/persistence/db.js';
 import { migrate } from '../../packages/persistence/migrate.js';
 import { claimCheck, enqueueCheck, reconcileExpired, runCheck } from '../../packages/persistence/operations.js';
 import { buildServer } from '../../apps/api/server.js';
+import { enqueueConnection } from '../../packages/explorer/connections.js';
+import { consumeQuota } from '../../packages/explorer/read-model.js';
+import { createHash } from 'node:crypto';
 const ownerUrl = process.env.DATABASE_URL ?? readFileSync(process.env.DATABASE_URL_FILE!, 'utf8').trim();
 const owner = database(ownerUrl);
 const dbName = `bpc_test_${process.pid}_${randomBytes(4).toString('hex')}`;
@@ -17,7 +20,7 @@ before(async () => {
   await owner.query(`CREATE DATABASE ${dbName}`);
   const url = new URL(ownerUrl); url.pathname = `/${dbName}`; db = database(url.toString());
   await migrate(db); await migrate(db);
-  await db.query(`INSERT INTO networks VALUES ($1,'Test',1337,1337,'{}',$2,NULL,'QBFT_HEADER','26.9.0')`, [networkId, 'a'.repeat(64)]);
+  await db.query(`INSERT INTO networks(id,name,chain_id,network_id,genesis,genesis_file_sha256,consensus,besu_version) VALUES ($1,'Test',1337,1337,'{}',$2,'QBFT_HEADER','26.9.0')`, [networkId, 'a'.repeat(64)]);
   await db.query(`INSERT INTO machines(id,network_id,name,connection_mode,address,os,architecture,failure_domain)
     VALUES ($1,$2,'Test host','local','localhost','linux','x64','host-1')`, [machineId, networkId]);
   for (const [i, id] of nodeIds.entries()) await db.query(`INSERT INTO node_instances
@@ -72,4 +75,37 @@ test('protected API enforces direct-call RBAC, rejects shell inputs and audits d
     assert.equal(visible.statusCode, 200); assert.equal(visible.json().physicalFailureDomains, 1);
     assert.ok((await db.query("SELECT 1 FROM audit_events WHERE outcome='DENIED'")).rowCount! >= 2);
   } finally { await app.close(); }
+});
+
+test('network registration is durable, concurrent-idempotent and preserves large chain IDs',async()=>{
+  const input={name:'Imported chain',chainId:'900719925474099312345678901234567890',networkId:'900719925474099312345678901234567890',genesisHash:`0x${'c'.repeat(64)}`,sourceIds:['reader']};
+  const sources=[{id:'reader',label:'Approved source',url:'http://127.0.0.1:8545',allowedCidrs:['127.0.0.1/32']}];
+  const key=randomUUID();
+  const jobs=await Promise.all(Array.from({length:3},()=>enqueueConnection(db,input,'operator',key,'registration-test',sources)));
+  assert.equal(new Set(jobs.map(job=>job.id)).size,1);assert.equal(jobs[0].state,'QUEUED');
+  const network=(await db.query('SELECT * FROM networks WHERE chain_id=$1',[input.chainId])).rows[0];
+  assert.equal(network.chain_id,input.chainId);assert.equal(network.ownership,'imported');assert.equal(network.genesis,null);assert.equal(network.genesis_block_hash,null);
+  assert.equal((await db.query('SELECT * FROM explorer_connection')).rowCount,0);
+  await assert.rejects(enqueueConnection(db,{...input,name:'Changed'},'operator',key,'test',sources));
+  await assert.rejects(enqueueConnection(db,{...input,sourceIds:['unknown']},'operator',randomUUID(),'test',sources));
+});
+test('read quotas survive server recreation and all recognized roles can read indexed data',async()=>{
+  const subject=randomUUID();
+  const results=await Promise.all(Array.from({length:125},()=>consumeQuota(db,subject,'read')));
+  assert.equal(results.filter(r=>r.allowed).length,120);
+  const tokens={Viewer:randomBytes(32).toString('hex'),ContractOperator:randomBytes(32).toString('hex'),InfrastructureOperator:randomBytes(32).toString('hex'),ValidatorGovernor:randomBytes(32).toString('hex'),Administrator:randomBytes(32).toString('hex')};
+  const auth={mode:'development' as const,profile:'local' as const,host:'127.0.0.1',isolated:true,devTokens:tokens};
+  const app=await buildServer({db,auth,rpcSources:[{id:'reader',label:'Approved',url:'http://127.0.0.1:8545',allowedCidrs:['127.0.0.1/32']}]});
+  try {
+    for(const token of Object.values(tokens))assert.equal((await app.inject({url:'/api/explorer/status',headers:{authorization:`Bearer ${token}`}})).statusCode,200);
+    assert.equal((await app.inject({url:'/api/explorer/sources',headers:{authorization:`Bearer ${tokens.Viewer}`}})).statusCode,403);
+    const sources=await app.inject({url:'/api/explorer/sources',headers:{authorization:`Bearer ${tokens.Administrator}`}});
+    assert.equal(sources.statusCode,200);assert.ok(!sources.body.includes('http://'));
+    await db.query(`UPDATE api_rate_limits SET hits=120 WHERE subject_hash=$1 AND bucket='read'`,[createHash('sha256').update('development:Viewer').digest('hex')]);
+  } finally{await app.close();}
+  const restarted=await buildServer({db,auth});
+  try {
+    const denied=await restarted.inject({url:'/api/explorer/status',headers:{authorization:`Bearer ${tokens.Viewer}`}});
+    assert.equal(denied.statusCode,429);assert.ok(Number(denied.headers['retry-after'])>0);
+  }finally{await restarted.close();}
 });

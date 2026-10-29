@@ -6,6 +6,8 @@ const exec = promisify(execFile);
 export async function recordEnvironment() {
   const docker = async (args: string[]) => (await exec('docker', args, { windowsHide: true, timeout: 15000 })).stdout.trim();
   const compose = ['compose', '--env-file', resolve('.runtime/lab/compose.env'), '-f', resolve('infra/compose/compose.yaml')];
+  const apiContainer=await docker([...compose,'ps','-q','api']);
+  if(!/^[0-9a-f]{12,64}$/.test(apiContainer))throw new Error('Running API container required for environment evidence');
   const manifest = JSON.parse(await readFile('infra/versions.json', 'utf8'));
   const volumes = [];
   for (const name of ['v1', 'v2', 'v3', 'v4', 'rpc']) {
@@ -18,7 +20,7 @@ export async function recordEnvironment() {
     docker: JSON.parse(await docker(['info', '--format', '{"architecture":"{{.Architecture}}","os":"{{.OperatingSystem}}","cpu":{{.NCPU}},"memoryBytes":{{.MemTotal}},"serverVersion":"{{.ServerVersion}}"}'])),
     compose: await docker(['compose', 'version', '--short']),
     postgres: await docker([...compose, 'exec', '-T', 'postgres', 'postgres', '--version']),
-    applicationImageId: await docker(['image', 'inspect', 'bpc-console:0.0.0', '--format', '{{.Id}}']),
+    applicationImageId: await docker(['inspect',apiContainer,'--format','{{.Image}}']),
     externalImages: manifest.images, dataVolumes: volumes,
   };
   await writeFile('.runtime/lab/evidence/environment.json', JSON.stringify(environment, null, 2) + '\n');

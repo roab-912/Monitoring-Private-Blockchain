@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0 — 2026-10-29
+
+- Explorateur réel : pages réseau, blocs, transactions, reçus, adresses et logs bruts ; recherche par numéro/hash/adresse, pagination, provenance, horodatages et fraîcheur.
+- Connexion active unique, sources RPC autorisées par l'opérateur, vérification chainId/networkId/genesis/version/capacités par job durable, origines managed/imported distinctes et refus des plans périmés.
+- Indexation reprenable sous verrou PostgreSQL : bloc complet et curseur atomiques, contraintes d'unicité, contrôle parentHash/checkpoint et comparaison entre sources. Les rounds/sceaux QBFT exclus du hash de chaîne ne déclenchent pas un faux incident.
+- Protection réseau par adresses résolues autorisées et fixées, méthodes RPC en lecture limitées, aucune URL libre ni proxy RPC dans l'API. Quotas PostgreSQL par identité et RBAC conservé.
+- Migrations additives 003/004, nouvelles permissions ciblées, états explicites pour divergence, reçu absent, limites et erreur de persistance ; aucun historique effacé sur panne RPC.
+- Qualification T01/T02/T03 sur Besu réel et injections RPC rapportées séparément ; tests PostgreSQL et Chromium étendus. ADR-007, runbook EXPLORER, README et STATUS mis à jour.
+- Aucune administration SSH, promotion de validateur, signature depuis l'interface ou autre fonction v0.2.
+
 ## 0.0.0 — 2026-10-28
 
 - Socle React/TypeScript, Fastify et worker séparé, contrats TypeBox communs avec génération OpenAPI, lint/typage/build/tests et CI à références immuables.

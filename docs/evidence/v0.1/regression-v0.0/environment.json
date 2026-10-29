@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-10-29T08:02:14.833Z",
+  "hostPlatform": "win32",
+  "hostArch": "x64",
+  "node": "24.22.1",
+  "npm": "11.19.1",
+  "docker": {
+    "architecture": "x86_64",
+    "os": "Docker Desktop",
+    "cpu": 8,
+    "memoryBytes": 8225107968,
+    "serverVersion": "26.1.1"
+  },
+  "compose": "2.27.0-desktop.2",
+  "postgres": "postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg12+2)",
+  "applicationImageId": "sha256:da3a45ac14973e6e51c76c5aee27c8ac7d28ad6d39d729764ce7f69826775cf0",
+  "externalImages": {
+    "besu": "hyperledger/besu:26.9.0@sha256:fc1813d67d630d7660eea6ee555c01e73bfecda3e54d24f9484c1c4a52c6fcb0",
+    "postgres": "postgres:18.6-bookworm@sha256:5c4783a8cc3f0074912164f94dfa1be4e043438f0f707cf968d7af9a0d31a2c8",
+    "node": "node:24.22.1-bookworm-slim@sha256:be8204d4bd327363357f532187b752ff62759c31bedf98e9e18fc08c9cbd605c"
+  },
+  "dataVolumes": [
+    {
+      "instance": "v1",
+      "dataBytes": "3411857"
+    },
+    {
+      "instance": "v2",
+      "dataBytes": "3411858"
+    },
+    {
+      "instance": "v3",
+      "dataBytes": "3411963"
+    },
+    {
+      "instance": "v4",
+      "dataBytes": "3411859"
+    },
+    {
+      "instance": "rpc",
+      "dataBytes": "3399387"
+    }
+  ]
+}

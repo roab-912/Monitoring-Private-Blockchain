@@ -16,8 +16,8 @@ try {
   await compose(['run', '--rm', '--no-deps', 'verifier', 'npm', 'run', 'test:db']);
   await recordEnvironment();
   await writeFile('.runtime/lab/evidence/run.json', JSON.stringify({ completedAt: new Date().toISOString(), state: 'SUCCEEDED', scenario: 'v0.0+T01' }, null, 2) + '\n');
-  await mkdir('docs/evidence/v0.0', { recursive: true });
-  for (const name of ['before', 'after', 'independence', 'environment', 'run']) await copyFile(`.runtime/lab/evidence/${name}.json`, `docs/evidence/v0.0/${name}.json`);
+  await mkdir('docs/evidence/v0.1/regression-v0.0', { recursive: true });
+  for (const name of ['before', 'after', 'independence', 'environment', 'run']) await copyFile(`.runtime/lab/evidence/${name}.json`, `docs/evidence/v0.1/regression-v0.0/${name}.json`);
 } catch (error) {
   await writeFile('.runtime/lab/evidence/run.json', JSON.stringify({ completedAt: new Date().toISOString(), state: 'FAILED' }));
   throw error;

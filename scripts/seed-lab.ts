@@ -1,5 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { database } from '../packages/persistence/db.js';
+import { sourcesFromEnv,ExplorerError } from '../packages/besu-adapter/rpc.js';
+import { blockAt,normalize,verifySource } from '../packages/besu-adapter/chain.js';
+import { setTimeout } from 'node:timers/promises';
 const manifest = JSON.parse(await readFile(process.env.LAB_PUBLIC_MANIFEST ?? '/lab/public.json', 'utf8'));
 const db = database(); const client = await db.connect();
 try {
@@ -25,6 +28,23 @@ try {
   }
   await client.query('GRANT bpc_api TO console_api');
   await client.query('GRANT bpc_worker TO console_worker');
+  const sources=await sourcesFromEnv();
+  if(sources.length) {
+    let zeros;
+    for(let attempt=0;attempt<30;attempt++) {
+      try {zeros=await Promise.all(sources.map(source=>blockAt(source,0n)));break;}catch {await setTimeout(1000);}
+    }
+    const zero=zeros?.[0];
+    if(!zero || zero.extraData.toLowerCase()!==manifest.genesis.extraData.toLowerCase() || BigInt(zero.timestamp)!==BigInt(manifest.genesis.timestamp)
+      || BigInt(zero.gasLimit)!==BigInt(manifest.genesis.gasLimit))throw new ExplorerError('MANAGED_GENESIS_MISMATCH');
+    const genesisHash=normalize(zero.hash);
+    const observations=await Promise.all(sources.map(source=>verifySource(source,{chainId:'1337',networkId:'1337',genesisHash})));
+    const updated=await client.query(`UPDATE networks SET expected_genesis_hash=$2,genesis_block_hash=$2 WHERE id=$1
+      AND (expected_genesis_hash IS NULL OR expected_genesis_hash=$2) AND (genesis_block_hash IS NULL OR genesis_block_hash=$2)`,[manifest.networkId,genesisHash]);
+    if(!updated.rowCount)throw new ExplorerError('MANAGED_GENESIS_MISMATCH');
+    await client.query('INSERT INTO explorer_connection(singleton,network_id,source_ids) VALUES(true,$1,$2) ON CONFLICT DO NOTHING',[manifest.networkId,JSON.stringify(sources.map(s=>s.id))]);
+    await client.query('INSERT INTO index_cursors(network_id,observations) VALUES($1,$2) ON CONFLICT DO NOTHING',[manifest.networkId,JSON.stringify(observations)]);
+  }
   await client.query('COMMIT');
   console.log('Lab inventory seeded; managed paths describe target host namespace; Compose mounts documented separately');
 } catch (error) { await client.query('ROLLBACK'); throw error; }

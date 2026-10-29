@@ -1,8 +1,8 @@
 # Console de gestion d'une blockchain privée Besu
 
-Dossier de cadrage et console au jalon **v0.0 : socle et laboratoire Besu réel**. Édition du 28 octobre 2026. L'explorateur et l'administration distante ne sont pas encore implémentés.
+Dossier de cadrage et console au jalon **v0.1 : explorateur et connexion vérifiée à une chaîne Besu existante**. Édition du 29 octobre 2026. L'administration distante reste hors périmètre de cette version.
 
-## Démarrage v0.0
+## Démarrage v0.1
 
 Prérequis : Node **24.22.1**, npm **11.19.1**, Docker Linux et Compose. Les versions/digests sont dans [infra/versions.json](infra/versions.json), la matrice réellement exécutée dans [docs/STATUS.md](docs/STATUS.md).
 
@@ -11,19 +11,22 @@ npm ci --ignore-scripts
 npm run lab:up
 ```
 
-Ouvrir **http://127.0.0.1:3000**. Obtenir le jeton local avec `npm run lab:credentials` dans un terminal personnel ; ne pas partager sa sortie. Le laboratoire comprend quatre validateurs QBFT, un nœud RPC non validateur, PostgreSQL, une API, une interface React et un worker. Il possède **un seul domaine de panne physique**.
+Ouvrir **http://127.0.0.1:3000**. Obtenir le jeton local avec `npm run lab:credentials` dans un terminal personnel ; ne pas partager sa sortie. L'explorateur affiche les blocs, transactions, reçus et logs indexés sur Besu réel, avec recherche, pagination, source et fraîcheur. L'onglet Socle et inventaire conserve la v0.0. Le laboratoire comprend quatre validateurs QBFT et un nœud RPC non validateur, sur **un seul domaine de panne physique**.
 
 ```sh
 npm run check       # épinglage, lint, typage, tests unitaires, build, contrat, OpenAPI
 npm run lab:verify  # Besu réel, témoin, redémarrage T01, RBAC et intégration PostgreSQL
+npm run lab:explorer:verify # indexeur SIGKILL, panne RPC, T02/T03 et injections séparées
 npx playwright install chromium
 npm run test:ui    # navigateur réel sur le laboratoire démarré
 npm run lab:down   # arrêt sans suppression des volumes ou clés
 ```
 
-Ne pas exécuter les tests UI pendant `lab:verify`, qui recrée les services. Le genesis actif et les clés sont propres à chaque laboratoire, sous `.runtime/lab` ignoré par Git ; le genesis public sous `infra/lab` est celui de la référence qualifiée. Un clone neuf génère ses propres identités. Aucune clé applicative n'est confiée à l'API ou au worker ; le compte témoin appartient uniquement à l'outil opérateur de qualification.
+Exécuter ces commandes séquentiellement : les tests de laboratoire interrompent des services. Le genesis actif et les clés sont propres à chaque laboratoire, sous `.runtime/lab` ignoré par Git ; le genesis public sous `infra/lab` est celui de la référence qualifiée. Un clone neuf génère ses propres identités. Aucune clé applicative n'est confiée à l'API ou au worker ; le compte témoin appartient uniquement à l'outil opérateur de qualification.
 
-Instructions détaillées : [laboratoire](docs/runbooks/LAB.md), [OIDC et droits](docs/runbooks/AUTH.md), [migrations et sauvegarde PostgreSQL](docs/runbooks/DATABASE.md), [six ADR](docs/adr/), [contrat OpenAPI généré](docs/generated/openapi.json), [preuves exécutées](docs/evidence/v0.0/).
+Instructions détaillées : [explorateur et connexion](docs/runbooks/EXPLORER.md), [laboratoire](docs/runbooks/LAB.md), [OIDC et droits](docs/runbooks/AUTH.md), [migrations et sauvegarde PostgreSQL](docs/runbooks/DATABASE.md), [ADR](docs/adr/), [OpenAPI généré](docs/generated/openapi.json), [preuves v0.1](docs/evidence/v0.1/).
+
+Les sources RPC sont autorisées dans un fichier d'opérateur, avec leurs sous-réseaux permis. Un Administrator sélectionne leurs IDs et renseigne les identifiants de réseau et le hash de genesis attendu. Le worker vérifie la connexion avant activation ; le navigateur ne soumet aucune URL RPC libre. Un désaccord ou un reçu manquant suspend l'indexation sans effacer l'historique. Les montants et hauteurs sont des chaînes exactes dans l'API. L'explorateur ne fournit ni signature, ni soldes courants, ni transferts internes, ni archive d'états historiques.
 
 Dans l'environnement Windows de réalisation, Node épinglé a été installé localement sans modifier le système. Pour cette copie de travail, activer ce runtime dans PowerShell avant les commandes :
 
@@ -45,7 +48,7 @@ Le choix de départ est **Besu + QBFT**, avec sélection des validateurs par vot
 4. Faire réaliser une seule version à la fois, en commençant par v0.0.
 5. Vérifier les critères de sortie de docs/versions/vX.Y.md avant de demander la version suivante.
 
-Les dossiers apps/, packages/, infra/ et tests/ contiennent désormais le socle v0.0. Les capacités ultérieures restent des spécifications ; une commande de bootstrap du laboratoire ne constitue pas une administration d'hôtes depuis l'interface.
+Les dossiers apps/, packages/, infra/ et tests/ contiennent désormais le socle v0.0 et l'explorateur v0.1. Les capacités ultérieures restent des spécifications ; une commande de bootstrap du laboratoire ne constitue pas une administration d'hôtes depuis l'interface.
 
 ## Documents
 

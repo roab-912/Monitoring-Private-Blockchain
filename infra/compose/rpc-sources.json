@@ -1,0 +1,4 @@
+[
+  { "id":"rpc", "label":"Nœud RPC du laboratoire", "url":"http://rpc:8549", "allowedCidrs":["172.29.77.14/32"] },
+  { "id":"validator-1", "label":"Lecture du validateur 1", "url":"http://v1:8545", "allowedCidrs":["172.29.77.10/32"] }
+]

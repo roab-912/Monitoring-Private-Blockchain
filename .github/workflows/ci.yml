@@ -1,4 +1,4 @@
-name: v0.0 foundation and real Besu
+name: v0.1 explorer and real Besu
 on: [push, pull_request]
 permissions:
   contents: read
@@ -24,6 +24,7 @@ jobs:
       - run: npm run check
       - run: npm run lab:up
       - run: npm run lab:verify
+      - run: npm run lab:explorer:verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:ui
       - if: always()

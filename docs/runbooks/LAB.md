@@ -1,4 +1,4 @@
-# Laboratoire v0.0
+# Laboratoire — socle v0.0 conservé en v0.1
 
 Prérequis : Node 24.22.1 et npm 11.19.1, moteur Docker Linux 26.1.1, Compose 2.27.0, accès aux registres au premier démarrage. Réserver au moteur au moins 8 Gio de RAM, 8 CPU et 20 Gio libres pour ce petit laboratoire. Les sous-réseaux Docker 172.29.77.0/24 (chaîne), 172.29.78.0/24 (base), 172.29.79.0/24 (web) et le port hôte 3000 doivent être libres. Les trois plages sont explicites pour empêcher l'allocateur automatique Docker de réserver un /16 chevauchant la chaîne lors d'une reprise. La matrice exécutée se trouve dans STATUS.md.
 
@@ -22,11 +22,14 @@ Qualification réelle (elle arrête et recrée les conteneurs de ce laboratoire,
 ```sh
 npm run check
 npm run lab:verify
+npm run lab:explorer:verify
 npx playwright install chromium
 npm run test:ui
 ```
 
-`lab:verify` déploie un nouveau témoin et écrit une valeur bigint, vérifie contrôle d'accès/événement/revert, contrôle les quatre proposeurs et latest/pending, exécute `down` puis `up` **sans supprimer les volumes**, relit identités/données/reçus/logs et soumet une nouvelle transaction. Il arrête ensuite API et worker pour vérifier la progression indépendante de Besu, les redémarre et exécute l'intégration PostgreSQL dans une base temporaire dédiée. Seul le vérificateur monte la clé du compte témoin. Les résultats publics sont exportés vers docs/evidence/v0.0 ; leurs horodatages identifient chaque exécution.
+`lab:verify` déploie un nouveau témoin et écrit une valeur bigint, vérifie contrôle d'accès/événement/revert, contrôle les quatre proposeurs et latest/pending, exécute `down` puis `up` **sans supprimer les volumes**, relit identités/données/reçus/logs et soumet une nouvelle transaction. Il arrête ensuite API et worker pour vérifier la progression indépendante de Besu, les redémarre et exécute l'intégration PostgreSQL dans une base temporaire dédiée. Seul le vérificateur monte la clé du compte témoin. Les résultats de régression sont exportés vers docs/evidence/v0.1/regression-v0.0 ; les preuves initiales v0.0 restent conservées. La commande `lab:explorer:verify` et les limites de l'explorateur sont détaillées dans EXPLORER.md. Ne pas lancer les tests UI pendant ces interruptions.
+
+En v0.1, le worker possède un accès RPC privé en lecture, limité par l'adaptateur et les sources autorisées. L'API et le navigateur restent isolés du réseau chain. Le seed de laboratoire vérifie les sources et ancre le hash réel du bloc zéro sans écraser une identité connue ni une connexion importée déjà active.
 
 Arrêt normal : `npm run lab:down`. Reprise : `npm run lab:up`. Ne pas utiliser `down -v`, ne pas effacer `.runtime/lab` et ne pas remplacer le genesis actif. Le programme refuse un laboratoire partiel ou une divergence de clé/genesis au lieu de les régénérer. Pour une autre chaîne, utiliser un autre dossier et adapter explicitement le nom de projet et le sous-réseau ; ne pas réemployer les clés de la référence.
 

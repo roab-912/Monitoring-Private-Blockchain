@@ -53,3 +53,13 @@ Le cadrage initial était un cahier de réalisation. La v0.0 possède désormais
 Les métadonnées npm ont été consultées sur registry.npmjs.org puis les versions exactes et intégrités conservées dans package-lock.json. Les images Node/PostgreSQL/Besu ont été résolues avec l'API `registry-1.docker.io`, en conservant le digest de l'index dans `infra/versions.json`. Les SHA des actions GitHub ont été résolus depuis les dépôts officiels actions/checkout, actions/setup-node, docker/setup-docker-action et docker/setup-compose-action.
 
 L'outillage Docker 26.1.1 / Compose 2.27.0 est celui disponible et réellement exécuté dans ce laboratoire. Ce choix fige une compatibilité fonctionnelle locale ; il ne constitue pas une qualification de sécurité d'une plateforme de production. Ansible, Runner, restic et Prometheus ne sont pas des dépendances installées en v0.0 : leurs versions seront choisies et testées lors de leur introduction.
+
+## Vérification v0.1 — 29 octobre 2026
+
+Les versions qualifiées du socle sont conservées ; aucune dépendance supplémentaire n'est introduite. Les méthodes eth_chainId, net_version, web3_clientVersion, rpc_modules, eth_blockNumber, eth_getBlockByNumber, eth_getTransactionReceipt et eth_getLogs sont exercées sur les RPC du Besu 26.9.0 réel. Leurs données, les absences de reçus et les statuts ne sont pas remplacés par un mock dans le bilan.
+
+- [Référence RPC Besu](https://docs.besu-eth.org/public-networks/reference/api) : namespaces et rpc_modules ; la qualification exerce aussi les méthodes requises, au lieu de se fier à cette seule liste.
+- [BftBlockHashing, tag 26.9.0](https://raw.githubusercontent.com/besu-eth/besu/26.9.0/consensus/common/src/main/java/org/hyperledger/besu/consensus/common/bft/BftBlockHashing.java) : calcul du hash de chaîne avec sceaux retirés et round neutralisé pour les blocs non genesis. Le laboratoire a effectivement renvoyé des sous-ensembles de sceaux différents sur un même bloc ; la comparaison a été adaptée et testée.
+- [Node HTTP](https://nodejs.org/docs/latest-v24.x/api/http.html) : connexion avec résolution contrôlée ; l'implémentation fixe l'adresse validée, refuse les redirections et limite durée/taille des réponses. Les adresses autorisées proviennent d'un fichier d'opérateur, pas d'entrées RPC du navigateur.
+
+Les limites de confiance, les contrôles d'index et la distinction entre données de chaîne et injections de réponses RPC sont détaillés dans ADR-007, STATUS.md et le runbook EXPLORER.md. Ces vérifications n'établissent pas une qualification de consensus byzantin ou d'archive historique.
